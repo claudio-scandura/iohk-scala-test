@@ -29,11 +29,7 @@ class BrokerSpec extends WordSpec
   class TestSigmaProtocolMessage extends SigmaProtocolMsg
 
   trait Setup extends ActorSystemWithTestActor {
-    //    lazy val autopilot: AutoPilot = (sender: ActorRef, msg: Any) => {
-    //      sender ! EncryptedNumber(new BigIntegerCiphertext(BigInt(1L).bigInteger))
-    //      TestActor.KeepRunning
-    //    }
-
+   
     lazy val autopilot: AutoPilot = new TestActor.AutoPilot {
       override def run(sender: ActorRef, msg: Any): AutoPilot = {
         sender ! EncryptedNumber(new BigIntegerCiphertext(BigInt(1L).bigInteger))
@@ -88,9 +84,7 @@ class BrokerSpec extends WordSpec
             TestActor.KeepRunning
           }
         }
-//        override lazy val autopilot: AutoPilot = (sender: ActorRef, msg: Any) => {
-//          TestActor.KeepRunning
-//        }
+
         override val usersAskTimeout = Timeout(100.millis)
 
         actorUnderTest ! InitProtocol
@@ -120,7 +114,7 @@ class BrokerSpec extends WordSpec
 
         captor.getValue should have(
           'X1 (aliceNumber),
-          'X1 (bobNumber)
+          'X2 (bobNumber)
         )
 
         captor.getValue.getR1 should not be null
